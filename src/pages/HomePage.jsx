@@ -1,6 +1,9 @@
 import React from 'react';
 import Navbar from '../components/Navbar';
+import TopBanner from '../components/TopBanner';
 import testImage from '../assets/images/test.jpg';
+import mainImage from '../assets/images/main.jpg';
+import item1 from '../assets/images/item1.jpg';
 import { Link } from 'react-router-dom';
 
 const Homepage = () => {
@@ -14,9 +17,7 @@ const Homepage = () => {
   return (
     <div className="font-sans">
       {/* Top Banner */}
-      <div className="bg-danger text-white text-center small py-2">
-        ACHTERAF BETALEN – Shop nu. Betaal later met Klarna.
-      </div>
+      <TopBanner />
 
       {/* Navbar */}
       <Navbar />
@@ -24,11 +25,15 @@ const Homepage = () => {
       {/* Hero Section */}
       <section className="position-relative" style={{ height: '80vh' }}>
         <img
-          src={testImage}
+          src={mainImage}
           alt="Couple"
           className="position-absolute top-0 start-0 w-100 h-100 object-fit-cover"
+          tyle={{ pointerEvents: 'none', zIndex: 2 }}
         />
-        <div className="position-absolute top-0 start-0 w-100 h-100 bg-dark bg-opacity-50 d-flex flex-column justify-content-center align-items-center text-center px-4">
+        <div
+          className="position-absolute top-0 start-0 w-100 h-100 bg-dark bg-opacity-50 d-flex flex-column justify-content-center align-items-center text-center px-4"
+          style={{ pointerEvents: 'none' }}
+        >
           <h1 className="text-white fw-bold mb-4" style={{ fontSize: '2rem' }}>
             Cadeaus die onvergetelijke momenten creëren
           </h1>
@@ -56,7 +61,7 @@ const Homepage = () => {
         <h2 className="h5 fw-bold mb-4">Bestseller</h2>
         <div className="container">
           <div className="card mx-auto" style={{ maxWidth: '300px' }}>
-            <img src={testImage} className="card-img-top" alt="Product Preview" />
+            <img src={item1} className="card-img-top" alt="Product Preview" />
             <div className="card-body">
               <h5 className="card-title">Custom Love Necklace</h5>
               <p className="card-text text-danger fw-semibold">€39,99</p>
