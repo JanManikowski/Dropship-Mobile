@@ -35,13 +35,13 @@ const ProductPage = () => {
       <Navbar />
       <div className="container mt-4">
         <div className="row g-4 align-items-center">
+          <h1 className="fw-bold mb-2">Custom Love Necklace</h1>
           <div className="col-md-6 text-center">
             <img src={testImage} alt="Product" className="img-fluid rounded shadow mb-3" style={{ maxHeight: '500px', objectFit: 'cover' }} />
-            <video className="w-100 rounded" controls src="https://www.w3schools.com/html/mov_bbb.mp4" />
+            {/* <video className="w-100 rounded" controls src="https://www.w3schools.com/html/mov_bbb.mp4" /> */}
           </div>
           <div className="col-md-6 position-relative">
             <span className="badge bg-warning text-dark position-absolute" style={{ top: 0, right: 0 }}>Trending</span>
-            <h1 className="fw-bold mb-2">Custom Love Necklace</h1>
             <p className="text-muted mb-1">Only {stock} left in stock • {watching} people are viewing this</p>
             <p className="text-decoration-underline text-primary small mb-2" role="button">Notify me when back in stock</p>
             <p className="text-muted mb-2">Discount ends in {formatTime(timeLeft)}</p>
@@ -56,9 +56,9 @@ const ProductPage = () => {
             </button>
             <p className="text-success fw-semibold">In Stock – Ships within 24h</p>
             <div className="d-flex gap-3 my-3">
-              <img src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Ideal_logo.png" alt="iDEAL" style={{ height: '28px' }} />
+              <img src="https://www.cardgate.com/wp-content/uploads/iDEAL-302x266.png" alt="iDEAL" style={{ height: '28px' }} />
               <img src="https://www.paypalobjects.com/webstatic/icon/pp258.png" alt="PayPal" style={{ height: '28px' }} />
-              <img src="https://upload.wikimedia.org/wikipedia/commons/5/5a/Klarna_Payment_Logo.png" alt="Klarna" style={{ height: '28px' }} />
+              <img src="https://docs.klarna.com/static/assets/Marketing%20Badge%20With%20Clear%20Space.png" alt="Klarna" style={{ height: '28px' }} />
             </div>
           </div>
         </div>
