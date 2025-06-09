@@ -10,6 +10,7 @@ const ProductPage = () => {
   const [watching, setWatching] = useState(0);
   const [stock] = useState(5);
   const [timeLeft, setTimeLeft] = useState(15 * 60); // 15 minutes
+  const [showPopup, setShowPopup] = useState(false);
 
   useEffect(() => {
     setWatching(5 + Math.floor(Math.random() * 25));
@@ -28,11 +29,18 @@ const ProductPage = () => {
 
   const handleAdd = () => {
     addToCart({ id: 1, name: 'Custom Love Necklace', price: 29.99, image: testImage });
+    setShowPopup(true);
+    setTimeout(() => setShowPopup(false), 1500);
   };
 
   return (
     <div className="font-sans">
       <Navbar />
+      {showPopup && (
+        <div className="position-fixed top-0 start-50 translate-middle-x mt-3 alert alert-success shadow" style={{ zIndex: 1050 }}>
+          Item added to cart!
+        </div>
+      )}
       <div className="container mt-4">
         <div className="row g-4 align-items-center">
           <h1 className="fw-bold mb-2">Custom Love Necklace</h1>

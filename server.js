@@ -1,6 +1,7 @@
 import express from 'express';
 import puppeteer from 'puppeteer';
 import cors from 'cors';
+/* global process */
 
 async function fetchAliProduct(rawUrl) {
   const cleanUrl = rawUrl.split('?')[0];
@@ -42,6 +43,7 @@ async function fetchAliProduct(rawUrl) {
       '.slides .slide img[src]',
       imgs => imgs.map(i => i.getAttribute('src'))
     );
+  // eslint-disable-next-line no-unused-vars
   } catch (e) {
     console.warn('⚠️  Primary img selector failed, trying fallback…');
     // fallback to data-src (some versions of the page lazy-load into data-src)
