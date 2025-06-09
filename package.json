@@ -15,7 +15,7 @@
     "cheerio": "^1.0.0",
     "cors": "^2.8.5",
     "express": "^5.1.0",
-    "firebase": "^9.22.0",
+    "firebase": "^9.23.0",
     "lucide-react": "^0.510.0",
     "mollie": "^2.0.2",
     "node-fetch": "^3.3.2",

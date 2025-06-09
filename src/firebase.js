@@ -1,14 +1,22 @@
-import { initializeApp } from 'firebase/app';
-import { getFirestore } from 'firebase/firestore';
+// Import the functions you need from the SDKs you need
+import { initializeApp } from "firebase/app";
+import { getAnalytics } from "firebase/analytics";
+import { getFirestore } from "firebase/firestore";
 
+// Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: 'YOUR_API_KEY',
-  authDomain: 'YOUR_PROJECT_ID.firebaseapp.com',
-  projectId: 'YOUR_PROJECT_ID',
-  storageBucket: 'YOUR_PROJECT_ID.appspot.com',
-  messagingSenderId: 'YOUR_SENDER_ID',
-  appId: 'YOUR_APP_ID',
+  apiKey: "AIzaSyAl8D0K3ZZ3kJMS-OSQd1pT6At5AV-6OUc",
+  authDomain: "dropship-45d6d.firebaseapp.com",
+  projectId: "dropship-45d6d",
+  storageBucket: "dropship-45d6d.firebasestorage.app",
+  messagingSenderId: "707535818764",
+  appId: "1:707535818764:web:41c4fe6c9b0c77370a1e29",
+  measurementId: "G-GKJ7W3D9XC"
 };
 
+// Initialize Firebase
 const app = initializeApp(firebaseConfig);
-export const db = getFirestore(app);
+const analytics = getAnalytics(app);
+const db = getFirestore(app);
+
+export { db };
