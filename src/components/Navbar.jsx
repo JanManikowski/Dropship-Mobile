@@ -33,6 +33,8 @@ const Navbar = () => {
             <Link to="/" className="d-block py-2 text-dark fw-semibold" onClick={toggleMenu}>Home</Link>
             <Link to="/product/1" className="d-block py-2 text-dark fw-semibold" onClick={toggleMenu}>Product</Link>
             <Link to="/about" className="d-block py-2 text-dark fw-semibold" onClick={toggleMenu}>About</Link>
+            <Link to="/faq" className="d-block py-2 text-dark fw-semibold" onClick={toggleMenu}>FAQ</Link>
+            <Link to="/returns" className="d-block py-2 text-dark fw-semibold" onClick={toggleMenu}>Returns</Link>
             <Link to="/contact" className="d-block py-2 text-dark fw-semibold" onClick={toggleMenu}>Contact</Link>
             <Link to="/addproduct" className="d-block py-2 text-dark fw-semibold" onClick={toggleMenu}>Add Product</Link>
           </div>

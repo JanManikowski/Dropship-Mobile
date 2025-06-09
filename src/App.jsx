@@ -5,6 +5,10 @@ import ProductPage from './pages/ProductPage';
 import CartPage from './pages/CartPage';
 import ThankYouPage from './pages/ThankYouPage';
 import AddProductPage from './pages/AddProductPage';
+import AboutPage from './pages/AboutPage';
+import ContactPage from './pages/ContactPage';
+import FaqPage from './pages/FaqPage';
+import ReturnPolicyPage from './pages/ReturnPolicyPage';
 
 function App() {
   return (
@@ -15,6 +19,10 @@ function App() {
         <Route path="/cart/" element={<CartPage />} />
         <Route path="/thankyou" element={<ThankYouPage />} />
         <Route path="/addproduct" element={<AddProductPage />} />
+        <Route path="/about" element={<AboutPage />} />
+        <Route path="/contact" element={<ContactPage />} />
+        <Route path="/faq" element={<FaqPage />} />
+        <Route path="/returns" element={<ReturnPolicyPage />} />
       </Routes>
     </Router>
   );
