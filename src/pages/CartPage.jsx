@@ -1,12 +1,18 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useCart } from '../context/CartContext';
 import Navbar from '../components/Navbar';
 import { useNavigate } from 'react-router-dom';
+import { db } from '../firebase';
+import { collection, addDoc } from 'firebase/firestore';
 
 const CartPage = () => {
   const { cart, setCart } = useCart();
   const navigate = useNavigate();
   const navigateRef = useRef(navigate);
+  const [showOffer, setShowOffer] = useState(false);
+  const [showForm, setShowForm] = useState(false);
+  const [showPayment, setShowPayment] = useState(false);
+  const [userData, setUserData] = useState({ name: '', email: '', address: '' });
 
   const handleRemove = (id) => {
     setCart(cart.filter(item => item.id !== id));
@@ -25,8 +31,32 @@ const CartPage = () => {
       sum + (item.price * (item.quantity || 1)), 0).toFixed(2);
   };
 
+  const handleCheckoutClick = () => {
+    setShowOffer(true);
+  };
+
+  const handleOfferAccept = () => {
+    setShowOffer(false);
+    setShowForm(true);
+  };
+
+  const handleFormChange = (e) => {
+    setUserData({ ...userData, [e.target.name]: e.target.value });
+  };
+
+  const handleFormSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      await addDoc(collection(db, 'orders'), { ...userData, cart });
+      setShowForm(false);
+      setShowPayment(true);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   useEffect(() => {
-    if (cart.length === 0) return;
+    if (!showPayment || cart.length === 0) return;
 
     const script = document.createElement('script');
     script.src = "https://www.paypal.com/sdk/js?client-id=AQGUD0FFHTbSuuoKebh8E8Vshdi7lu-EWRFNpAcCPUuQcsX6rE0bnnt1c5SPDoYk3dFWfqOMk81Tvxol&currency=EUR";
@@ -55,7 +85,7 @@ const CartPage = () => {
       const oldButton = document.getElementById('paypal-button-container');
       if (oldButton) oldButton.innerHTML = '';
     };
-  }, [cart]);
+  }, [cart, showPayment]);
 
   return (
     <div className="font-sans min-vh-100 d-flex flex-column">
@@ -98,8 +128,63 @@ const CartPage = () => {
 
             <div className="text-end mt-4">
               <h4>Subtotal: €{getSubtotal()}</h4>
-              <div id="paypal-button-container" className="mt-3" />
+              {showPayment ? (
+                <div id="paypal-button-container" className="mt-3" />
+              ) : (
+                <button className="btn btn-primary mt-3" onClick={handleCheckoutClick}>
+                  Proceed to Checkout
+                </button>
+              )}
             </div>
+
+            {showOffer && (
+              <div className="modal d-block" tabIndex="-1" role="dialog" style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}>
+                <div className="modal-dialog modal-dialog-centered" role="document">
+                  <div className="modal-content">
+                    <div className="modal-header">
+                      <h5 className="modal-title">Special Offer</h5>
+                    </div>
+                    <div className="modal-body">
+                      <p>This time only, 50% off for this item!</p>
+                    </div>
+                    <div className="modal-footer">
+                      <button className="btn btn-primary" onClick={handleOfferAccept}>Claim Offer</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {showForm && (
+              <div className="modal d-block" tabIndex="-1" role="dialog" style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}>
+                <div className="modal-dialog" role="document">
+                  <div className="modal-content">
+                    <div className="modal-header">
+                      <h5 className="modal-title">Enter Your Details</h5>
+                    </div>
+                    <form onSubmit={handleFormSubmit}>
+                      <div className="modal-body">
+                        <div className="mb-3">
+                          <label className="form-label">Name</label>
+                          <input name="name" className="form-control" value={userData.name} onChange={handleFormChange} required />
+                        </div>
+                        <div className="mb-3">
+                          <label className="form-label">Email</label>
+                          <input type="email" name="email" className="form-control" value={userData.email} onChange={handleFormChange} required />
+                        </div>
+                        <div className="mb-3">
+                          <label className="form-label">Address</label>
+                          <textarea name="address" className="form-control" value={userData.address} onChange={handleFormChange} required />
+                        </div>
+                      </div>
+                      <div className="modal-footer">
+                        <button type="submit" className="btn btn-primary">Continue to Payment</button>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            )}
           </>
         )}
       </div>
