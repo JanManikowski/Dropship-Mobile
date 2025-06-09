@@ -28,6 +28,7 @@ const ProductPage = () => {
 
   const handleAdd = () => {
     addToCart({ id: 1, name: 'Custom Love Necklace', price: 29.99, image: testImage });
+    alert('Item added to cart!');
   };
 
   return (

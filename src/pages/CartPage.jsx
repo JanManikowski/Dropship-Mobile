@@ -1,12 +1,10 @@
-import React, { useEffect, useRef } from 'react';
+import React from 'react';
 import { useCart } from '../context/CartContext';
 import Navbar from '../components/Navbar';
-import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 const CartPage = () => {
   const { cart, setCart } = useCart();
-  const navigate = useNavigate();
-  const navigateRef = useRef(navigate);
 
   const handleRemove = (id) => {
     setCart(cart.filter(item => item.id !== id));
@@ -25,37 +23,6 @@ const CartPage = () => {
       sum + (item.price * (item.quantity || 1)), 0).toFixed(2);
   };
 
-  useEffect(() => {
-    if (cart.length === 0) return;
-
-    const script = document.createElement('script');
-    script.src = "https://www.paypal.com/sdk/js?client-id=AQGUD0FFHTbSuuoKebh8E8Vshdi7lu-EWRFNpAcCPUuQcsX6rE0bnnt1c5SPDoYk3dFWfqOMk81Tvxol&currency=EUR";
-    script.addEventListener("load", () => {
-      if (window.paypal) {
-        window.paypal.Buttons({
-          createOrder: (data, actions) => {
-            return actions.order.create({
-              purchase_units: [{
-                amount: { value: getSubtotal() }
-              }]
-            });
-          },
-          onApprove: (data, actions) => {
-            return actions.order.capture().then(() => {
-              navigateRef.current('/thankyou');
-              setTimeout(() => setCart([]), 100);
-            });
-          }
-        }).render('#paypal-button-container');
-      }
-    });
-
-    document.body.appendChild(script);
-    return () => {
-      const oldButton = document.getElementById('paypal-button-container');
-      if (oldButton) oldButton.innerHTML = '';
-    };
-  }, [cart]);
 
   return (
     <div className="font-sans min-vh-100 d-flex flex-column">
@@ -98,7 +65,7 @@ const CartPage = () => {
 
             <div className="text-end mt-4">
               <h4>Subtotal: €{getSubtotal()}</h4>
-              <div id="paypal-button-container" className="mt-3" />
+              <Link to="/offer" className="btn btn-primary mt-3">Proceed to Checkout</Link>
             </div>
           </>
         )}

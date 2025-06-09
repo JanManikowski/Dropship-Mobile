@@ -1,3 +1,4 @@
+/* eslint-env node */
 import express from 'express';
 import puppeteer from 'puppeteer';
 import cors from 'cors';
@@ -42,7 +43,7 @@ async function fetchAliProduct(rawUrl) {
       '.slides .slide img[src]',
       imgs => imgs.map(i => i.getAttribute('src'))
     );
-  } catch (e) {
+  } catch {
     console.warn('⚠️  Primary img selector failed, trying fallback…');
     // fallback to data-src (some versions of the page lazy-load into data-src)
     images = await page.$$eval(
