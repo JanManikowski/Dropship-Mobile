@@ -3,6 +3,8 @@ import { Menu, ShoppingCart } from 'lucide-react';
 import logo from '../assets/images/logo2.png';
 import { Link } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
+import TopBanner from '../components/TopBanner';
+
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -11,7 +13,8 @@ const Navbar = () => {
   const toggleMenu = () => setIsOpen(!isOpen);
 
   return (
-    <header style={{ zIndex: 1000, position: 'relative' }}>
+    <header style={{ position: 'fixed', top: 0, left: 0, width: '100%', zIndex: 1000 }}>
+    <TopBanner/>
       <nav className="bg-white shadow px-4 py-4 position-relative">
         <div className="d-flex justify-content-between align-items-center">
           <button className="btn p-0 border-0" onClick={toggleMenu}>
@@ -36,7 +39,7 @@ const Navbar = () => {
             <Link to="/faq" className="d-block py-2 text-dark fw-semibold" onClick={toggleMenu}>FAQ</Link>
             <Link to="/returns" className="d-block py-2 text-dark fw-semibold" onClick={toggleMenu}>Returns</Link>
             <Link to="/contact" className="d-block py-2 text-dark fw-semibold" onClick={toggleMenu}>Contact</Link>
-            <Link to="/addproduct" className="d-block py-2 text-dark fw-semibold" onClick={toggleMenu}>Add Product</Link>
+            <Link to="/products" className="d-block py-2 text-dark fw-semibold" onClick={toggleMenu}>Products</Link>
           </div>
         )}
       </nav>

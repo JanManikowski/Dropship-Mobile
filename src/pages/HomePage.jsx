@@ -1,8 +1,8 @@
 import React from 'react';
 import Navbar from '../components/Navbar';
-import TopBanner from '../components/TopBanner';
 import testImage from '../assets/images/test.jpg';
 import mainImage from '../assets/images/main.jpg';
+import BestSellerSlider from '../components/BestSellerSlider';
 import item1 from '../assets/images/item1.jpg';
 import { Link } from 'react-router-dom';
 
@@ -16,9 +16,6 @@ const Homepage = () => {
 
   return (
     <div className="font-sans">
-      {/* Top Banner */}
-      <TopBanner />
-
       {/* Navbar */}
       <Navbar />
 
@@ -28,7 +25,7 @@ const Homepage = () => {
           src={mainImage}
           alt="Couple"
           className="position-absolute top-0 start-0 w-100 h-100 object-fit-cover"
-          tyle={{ pointerEvents: 'none', zIndex: 2 }}
+          style={{ pointerEvents: 'none', zIndex: 2 }}
         />
         <div
           className="position-absolute top-0 start-0 w-100 h-100 bg-dark bg-opacity-50 d-flex flex-column justify-content-center align-items-center text-center px-4"
@@ -57,19 +54,8 @@ const Homepage = () => {
       </section>
 
       {/* Product Preview */}
-      <section className="bg-light py-5 text-center">
-        <h2 className="h5 fw-bold mb-4">Bestseller</h2>
-        <div className="container">
-          <div className="card mx-auto" style={{ maxWidth: '300px' }}>
-            <img src={item1} className="card-img-top" alt="Product Preview" />
-            <div className="card-body">
-              <h5 className="card-title">Custom Love Necklace</h5>
-              <p className="card-text text-danger fw-semibold">€39,99</p>
-              <Link to="/product/1" className="btn btn-outline-danger w-100">View Product</Link>
-            </div>
-          </div>
-        </div>
-      </section>
+          <BestSellerSlider />
+
     </div>
   );
 };
