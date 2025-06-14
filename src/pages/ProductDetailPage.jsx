@@ -69,7 +69,7 @@ const ProductDetailPage = () => {
         </div>
       )}
 
-<div className="container mt-4" style={{ paddingTop: '180px' }}>
+      <div className="container mt-4">
         <div className="row g-4 align-items-center">
           <h1 className="fw-bold mb-2">{product.title}</h1>
 

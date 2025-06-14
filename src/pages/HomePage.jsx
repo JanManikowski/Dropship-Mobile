@@ -21,11 +21,11 @@ const Homepage = () => {
       {/* Hero Section */}
       <section className="position-relative w-100" style={{ aspectRatio: '16 / 9',  }}>
         <img
-  src={mainImage}
-  alt="Couple"
-  className="position-absolute top-0 start-0 w-100 h-100 object-fit-cover"
-  style={{ objectFit: 'cover', zIndex: 2 }}
-/>
+          src={mainImage}
+          alt="Couple"
+          className="position-absolute top-0 start-0 w-100 h-100 object-fit-cover"
+          style={{ objectFit: 'cover', zIndex: 2 }}
+        />
 
         <div
           className="position-absolute top-0 start-0 w-100 h-100 bg-dark bg-opacity-50 d-flex flex-column justify-content-center align-items-center text-center px-4"
@@ -43,7 +43,7 @@ const Homepage = () => {
       {/* Features Section */}
       <section className="py-5 text-center bg-white">
         <h2 className="h5 fw-bold mb-4">Wat Ons Speciaal Maakt</h2>
-        <div className="row row-cols-2 g-4 px-4">
+        <div className="row row-cols-2 g-4 px-4 w-100">
           {features.map(({ icon, title }) => (
             <div key={title} className="col d-flex flex-column align-items-center">
               <img src={icon} alt={title} className="mb-2" style={{ width: '40px', height: '40px' }} />
