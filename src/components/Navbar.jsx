@@ -13,7 +13,7 @@ const Navbar = () => {
   const toggleMenu = () => setIsOpen(!isOpen);
 
   return (
-    <header style={{ position: 'fixed', top: 0, left: 0, width: '100%', zIndex: 1000 }}>
+    <header style={{ position: 'relative', top: 0, left: 0, width: '100%', zIndex: 1000 }}>
     <TopBanner/>
       <nav className="bg-white shadow px-4 py-4 position-relative">
         <div className="d-flex justify-content-between align-items-center">
@@ -34,7 +34,6 @@ const Navbar = () => {
         {isOpen && (
           <div className="bg-light position-absolute start-0 top-100 w-100 py-3 shadow-sm text-center">
             <Link to="/" className="d-block py-2 text-dark fw-semibold" onClick={toggleMenu}>Home</Link>
-            <Link to="/product/1" className="d-block py-2 text-dark fw-semibold" onClick={toggleMenu}>Product</Link>
             <Link to="/about" className="d-block py-2 text-dark fw-semibold" onClick={toggleMenu}>About</Link>
             <Link to="/faq" className="d-block py-2 text-dark fw-semibold" onClick={toggleMenu}>FAQ</Link>
             <Link to="/returns" className="d-block py-2 text-dark fw-semibold" onClick={toggleMenu}>Returns</Link>

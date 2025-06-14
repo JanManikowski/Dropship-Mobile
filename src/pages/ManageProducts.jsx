@@ -10,7 +10,7 @@ const ManageProducts = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (user === null) return; // wait for auth check
+    if (user === null) return;
 
     if (!user) {
       navigate('/admin');
@@ -70,63 +70,68 @@ const ManageProducts = () => {
         </div>
       </div>
 
-      <div className="table-responsive rounded shadow-sm">
-        <table className="table table-hover align-middle mb-0 bg-white rounded overflow-hidden">
-          <thead className="bg-light">
-            <tr>
-              <th>Titel</th>
-              <th>Prijs (€)</th>
-              <th>AliExpress Link</th>
-              <th>Verkocht</th>
-              <th>Bestseller</th>
-              <th style={{ minWidth: '130px' }}>Acties</th>
-            </tr>
-          </thead>
-          <tbody>
-            {products.map(p => (
-              <tr key={p.id}>
-                <td className="fw-semibold">{p.title}</td>
-                <td>{p.price ? `€${Number(p.price).toFixed(2)}` : '—'}</td>
-                <td>
-                  <a
-                    href={p.aliexpress?.main}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="text-decoration-none text-primary"
-                  >
-                    Bekijk
-                  </a>
-                </td>
-                <td>{p.purchased}</td>
-                <td>{p.bestseller ? '✅' : '—'}</td>
-                <td>
-                  <div className="d-flex gap-2 flex-wrap">
-                    <Link
-                      to={`/admin/edit/${p.id}`}
-                      className="btn btn-sm btn-outline-primary rounded-pill"
-                    >
-                      Bewerken
-                    </Link>
-                    <button
-                      onClick={() => handleDelete(p.id)}
-                      className="btn btn-sm btn-outline-danger rounded-pill"
-                    >
-                      Verwijderen
-                    </button>
+      {products.length === 0 ? (
+        <p className="text-center text-muted">Geen producten gevonden.</p>
+      ) : (
+        <div className="row row-cols-1 row-cols-md-2 g-4">
+          {products.map(p => (
+            <div key={p.id} className="col">
+              <div className="card h-100 shadow-sm border-0 rounded-4">
+                <div className="row g-0">
+                  <div className="col-4">
+                    <img
+                      src={p.images?.[0] || 'https://via.placeholder.com/200x200?text=Geen+Afbeelding'}
+                      alt={p.title}
+                      className="img-fluid rounded-start h-100 object-fit-cover"
+                      style={{ minHeight: '100%' }}
+                    />
                   </div>
-                </td>
-              </tr>
-            ))}
-            {products.length === 0 && (
-              <tr>
-                <td colSpan="6" className="text-center text-muted py-4">
-                  Geen producten gevonden.
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
-      </div>
+                  <div className="col-8">
+                    <div className="card-body d-flex flex-column h-100">
+                      <h6 className="fw-bold mb-2">{p.title}</h6>
+                      <p className="text-muted small mb-1">
+                        Prijs: €{Number(p.price).toFixed(2)}{' '}
+                        {p.discountPrice && (
+                          <>
+                            <del className="ms-2 text-muted small">€{Number(p.discountPrice).toFixed(2)}</del>
+                          </>
+                        )}
+                      </p>
+                      <div className="d-flex flex-wrap gap-2 small text-secondary mb-2">
+                        <span>Voorraad: {p.stock ?? 0}</span>
+                        <span>Verkocht: {p.purchased}</span>
+                        <span>Bestseller: {p.bestseller ? '✅' : '—'}</span>
+                      </div>
+                      <a
+                        href={p.aliexpress?.main}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="text-decoration-none small text-primary mb-3"
+                      >
+                        AliExpress Link
+                      </a>
+                      <div className="mt-auto d-flex gap-2 flex-wrap">
+                        <Link
+                          to={`/admin/edit/${p.id}`}
+                          className="btn btn-sm btn-outline-primary rounded-pill"
+                        >
+                          Bewerken
+                        </Link>
+                        <button
+                          onClick={() => handleDelete(p.id)}
+                          className="btn btn-sm btn-outline-danger rounded-pill"
+                        >
+                          Verwijderen
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 };

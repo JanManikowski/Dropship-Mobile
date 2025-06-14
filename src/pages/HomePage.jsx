@@ -1,9 +1,8 @@
 import React from 'react';
 import Navbar from '../components/Navbar';
 import testImage from '../assets/images/test.jpg';
-import mainImage from '../assets/images/main.jpg';
+import mainImage from '../assets/images/169main.jpg';
 import BestSellerSlider from '../components/BestSellerSlider';
-import item1 from '../assets/images/item1.jpg';
 import { Link } from 'react-router-dom';
 
 const Homepage = () => {
@@ -20,13 +19,14 @@ const Homepage = () => {
       <Navbar />
 
       {/* Hero Section */}
-      <section className="position-relative" style={{ height: '80vh' }}>
+      <section className="position-relative w-100" style={{ aspectRatio: '16 / 9',  }}>
         <img
-          src={mainImage}
-          alt="Couple"
-          className="position-absolute top-0 start-0 w-100 h-100 object-fit-cover"
-          style={{ pointerEvents: 'none', zIndex: 2 }}
-        />
+  src={mainImage}
+  alt="Couple"
+  className="position-absolute top-0 start-0 w-100 h-100 object-fit-cover"
+  style={{ objectFit: 'cover', zIndex: 2 }}
+/>
+
         <div
           className="position-absolute top-0 start-0 w-100 h-100 bg-dark bg-opacity-50 d-flex flex-column justify-content-center align-items-center text-center px-4"
           style={{ pointerEvents: 'none' }}

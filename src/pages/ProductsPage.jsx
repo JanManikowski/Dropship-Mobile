@@ -25,10 +25,10 @@ const ProductsPage = () => {
   }, []);
 
   return (
-    <div className="font-sans pt-1" style={{ minHeight: '100vh' }}>
+    <div className="" style={{ minHeight: '100vh' }}>
       <Navbar />
 
-      <section className="py-5 bg-light" style={{ marginTop: '160px' }}>
+      <section className="py-5 bg-light">
         <div className="container">
           <h2 className="fw-bold text-center mb-4">Onze Producten</h2>
 
