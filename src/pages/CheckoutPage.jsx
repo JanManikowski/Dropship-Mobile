@@ -7,7 +7,7 @@ import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 
 const CheckoutPage = () => {
-  const { cart, setCart } = useCart();
+  const { cart, clearCart } = useCart();
   const navigate = useNavigate();
   const navigateRef = useRef(navigate);
 
@@ -54,6 +54,7 @@ const CheckoutPage = () => {
     }
   };
 
+<<<<<<< HEAD
 const renderPayPal = () => {
   if (window.paypal) {
     window.paypal.Buttons({
@@ -113,6 +114,26 @@ const renderPayPal = () => {
 };
 
 
+=======
+  const loadPayPal = () => {
+    if (document.getElementById('paypal-script')) return;
+    const script = document.createElement('script');
+    script.id = 'paypal-script';
+    script.src = 'https://www.paypal.com/sdk/js?client-id=AQGUD0FFHTbSuuoKebh8E8Vshdi7lu-EWRFNpAcCPUuQcsX6rE0bnnt1c5SPDoYk3dFWfqOMk81Tvxol&currency=EUR';
+    script.addEventListener('load', () => {
+      window.paypal.Buttons({
+        createOrder: (data, actions) => actions.order.create({
+          purchase_units: [{ amount: { value: getTotal() } }]
+        }),
+        onApprove: (data, actions) => actions.order.capture().then(() => {
+          navigateRef.current('/thankyou');
+          setTimeout(() => clearCart(), 100);
+        })
+      }).render('#paypal-button-container');
+    });
+    document.body.appendChild(script);
+  };
+>>>>>>> 0e8b2ef5d51f4bb321b8644b67bee51c8cf0be4f
 
   useEffect(() => {
     const existingScript = document.getElementById('paypal-script');

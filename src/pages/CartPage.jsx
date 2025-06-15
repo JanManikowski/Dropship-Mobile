@@ -8,14 +8,14 @@ import { db } from '../firebase';
 import { Trash2 } from 'lucide-react';
 
 const CartPage = () => {
-  const { cart, setCart } = useCart();
+  const { cart, setCart, removeFromCart } = useCart();
   const navigate = useNavigate();
 
   const [showOffer, setShowOffer] = useState(false);
   const [offerItem, setOfferItem] = useState(null);
 
   const handleRemove = (id) => {
-    setCart(cart.filter(item => item.id !== id));
+    removeFromCart(id);
   };
 
   const handleQuantityChange = (id, delta) => {

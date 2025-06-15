@@ -5,11 +5,13 @@ import { db } from '../firebase';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import { useCart } from '../context/CartContext';
+import { useWishlist } from '../context/WishlistContext';
 import ImageCarousel from '../components/ImageCarousel';
 
 const ProductDetailPage = () => {
   const { id } = useParams();
   const { addToCart } = useCart();
+  const { wishlist, addToWishlist, removeFromWishlist } = useWishlist();
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [wish, setWish] = useState(false);
@@ -41,6 +43,10 @@ const ProductDetailPage = () => {
     return () => clearInterval(timer);
   }, []);
 
+  useEffect(() => {
+    setWish(wishlist.some((item) => item.id === id));
+  }, [id, wishlist]);
+
   const formatTime = (sec) => {
     const m = Math.floor(sec / 60).toString().padStart(2, '0');
     const s = (sec % 60).toString().padStart(2, '0');
@@ -56,6 +62,19 @@ const ProductDetailPage = () => {
     });
     setShowPopup(true);
     setTimeout(() => setShowPopup(false), 1500);
+  };
+
+  const handleWishlist = () => {
+    if (wish) {
+      removeFromWishlist(product.id);
+    } else {
+      addToWishlist({
+        id: product.id,
+        name: product.title,
+        price: product.discountPrice || product.price,
+        image: product.images?.[0],
+      });
+    }
   };
 
   if (loading) return <p className="text-center mt-5">Laden...</p>;
@@ -104,7 +123,7 @@ const ProductDetailPage = () => {
               )}
             </h3>
 
-            <button className="btn btn-outline-secondary mb-2" onClick={() => setWish(!wish)}>
+            <button className="btn btn-outline-secondary mb-2" onClick={handleWishlist}>
               {wish ? 'Wishlisted' : 'Add to Wishlist'}
             </button>
 
