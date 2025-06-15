@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import { collection, addDoc } from 'firebase/firestore';
-import { db } from '../firebase';
+import { db, storage } from '../firebase';
 import { useNavigate } from 'react-router-dom';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { v4 as uuidv4 } from 'uuid';
 
 const AddProductPage = () => {
   const [title, setTitle] = useState('');
@@ -18,29 +20,47 @@ const AddProductPage = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const handleSubmit = async (e) => {
+  const handleImageUpload = async () => {
+    const urls = [];
+    for (const image of images) {
+      const storageRef = ref(storage, `product-images/${uuidv4()}-${image.name}`);
+      await uploadBytes(storageRef, image);
+      const downloadURL = await getDownloadURL(storageRef);
+      urls.push(downloadURL);
+    }
+    return urls;
+  };
+
+const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
 
-    await addDoc(collection(db, 'products'), {
-      title,
-      description,
-      images: images.split(',').map(s => s.trim()).filter(Boolean),
-      video: video.trim(),
-      price: parseFloat(price),
-      discountPrice: parseFloat(discountPrice),
-      stock: parseInt(stock),
-      aliexpress: {
-        main: linkMain.trim(),
-        backup: linkBackup.trim(),
-        extra: linkExtra.trim()
-      },
-      purchased: 0,
-      bestseller,
-    });
+    try {
+      const imageUrls = await handleImageUpload();
+
+      await addDoc(collection(db, 'products'), {
+        title,
+        description,
+        images: imageUrls,
+        video: video.trim(),
+        price: parseFloat(price),
+        discountPrice: parseFloat(discountPrice),
+        stock: parseInt(stock),
+        aliexpress: {
+          main: linkMain.trim(),
+          backup: linkBackup.trim(),
+          extra: linkExtra.trim()
+        },
+        purchased: 0,
+        bestseller,
+      });
+
+      navigate('/admin/manage');
+    } catch (err) {
+      console.error('Upload failed:', err);
+    }
 
     setLoading(false);
-    navigate('/admin/manage');
   };
 
   return (
@@ -60,8 +80,15 @@ const AddProductPage = () => {
           </div>
 
           <div className="mb-3">
-            <label className="form-label">Afbeelding URLs (gescheiden met komma’s)</label>
-            <input className="form-control" value={images} onChange={e => setImages(e.target.value)} required />
+            <label className="form-label">Afbeeldingen uploaden (.jpg, .png, meerdere mogelijk)</label>
+            <input
+              type="file"
+              className="form-control"
+              multiple
+              accept="image/*"
+              onChange={e => setImages(Array.from(e.target.files))}
+              required
+            />
           </div>
 
           <div className="mb-3">

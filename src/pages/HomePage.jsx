@@ -3,8 +3,7 @@ import Navbar from '../components/Navbar';
 import testImage from '../assets/images/test.jpg';
 import mainImage from '../assets/images/169main.jpg';
 import BestSellerSlider from '../components/BestSellerSlider';
-import { Link } from 'react-router-dom';
-
+import ProductCard from '../components/ProductCard';
 const Homepage = () => {
   const features = [
     { icon: testImage, title: "Gepersonaliseerd" },

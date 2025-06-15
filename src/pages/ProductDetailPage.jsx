@@ -4,6 +4,7 @@ import { doc, getDoc } from 'firebase/firestore';
 import { db } from '../firebase';
 import Navbar from '../components/Navbar';
 import { useCart } from '../context/CartContext';
+import ImageCarousel from '../components/ImageCarousel';
 
 const ProductDetailPage = () => {
   const { id } = useParams();
@@ -71,18 +72,13 @@ const ProductDetailPage = () => {
 
       <div className="container mt-4">
         <div className="row g-4 align-items-center">
-          <h1 className="fw-bold mb-2">{product.title}</h1>
-
           <div className="col-md-6 text-center">
+            {product.images?.length > 0 && (
+  <ImageCarousel images={product.images} />
+)}
 
-            {product.images?.[0] && (
-              <img
-                src={product.images[0]}
-                alt={product.title}
-                className="img-fluid rounded shadow mb-3"
-                style={{ maxHeight: '500px', objectFit: 'cover' }}
-              />
-            )}
+          <h2 className="fw-bold mb-2">{product.title}</h2>
+
             {/* Optional video:
             {product.video && (
               <video className="w-100 rounded" controls src={product.video} />
@@ -143,7 +139,7 @@ const ProductDetailPage = () => {
         </div>
 
         <h4 className="mb-3">Customers also bought</h4>
-        <div id="carousel" className="carousel slide" data-bs-ride="carousel">
+        <div id="carousel" className="carousel slide h-300" data-bs-ride="carousel">
           <div className="carousel-inner">
             <div className="carousel-item active text-center">
               <img src={product.images?.[1] || product.images?.[0]} className="d-block w-100" style={{ maxWidth: '300px', margin: '0 auto' }} alt="Item" />
@@ -153,10 +149,6 @@ const ProductDetailPage = () => {
             </div>
           </div>
         </div>
-      </div>
-
-      <div className="d-md-none fixed-bottom bg-white p-2 shadow">
-        <button className="btn btn-danger w-100" onClick={handleAdd}>Add to Cart</button>
       </div>
     </div>
   );

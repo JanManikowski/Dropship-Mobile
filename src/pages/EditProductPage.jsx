@@ -2,6 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { doc, getDoc, updateDoc } from 'firebase/firestore';
 import { useParams, useNavigate } from 'react-router-dom';
 import { db } from '../firebase';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { storage } from '../firebase';
+import { v4 as uuidv4 } from 'uuid';
 
 const EditProductPage = () => {
   const { id } = useParams();
@@ -21,6 +24,8 @@ const EditProductPage = () => {
   const [linkBackup, setLinkBackup] = useState('');
   const [linkExtra, setLinkExtra] = useState('');
   const [bestseller, setBestseller] = useState(false);
+  const [newImageFiles, setNewImageFiles] = useState([]);
+
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -30,7 +35,7 @@ const EditProductPage = () => {
         const data = snap.data();
         setTitle(data.title || '');
         setDescription(data.description || '');
-        setImages((data.images || []).join(', '));
+        setImages(data.images || []);
         setVideo(data.video || '');
         setPrice(data.price || '');
         setDiscountPrice(data.discountPrice || '');
@@ -46,15 +51,28 @@ const EditProductPage = () => {
     fetchProduct();
   }, [id]);
 
+  const uploadNewImages = async () => {
+  const urls = [];
+  for (const file of newImageFiles) {
+    const storageRef = ref(storage, `product-images/${uuidv4()}-${file.name}`);
+    await uploadBytes(storageRef, file);
+    const downloadURL = await getDownloadURL(storageRef);
+    urls.push(downloadURL);
+  }
+  return urls;
+};
+
   const handleSave = async (e) => {
     e.preventDefault();
     setSaving(true);
+
+    const uploadedImageUrls = await uploadNewImages();
 
     const ref = doc(db, 'products', id);
     await updateDoc(ref, {
       title,
       description,
-      images: images.split(',').map(s => s.trim()).filter(Boolean),
+      images: [...images, ...uploadedImageUrls],
       video: video.trim(),
       price: parseFloat(price),
       discountPrice: parseFloat(discountPrice),
@@ -92,9 +110,42 @@ const EditProductPage = () => {
           </div>
 
           <div className="mb-3">
-            <label className="form-label">Afbeelding URLs (gescheiden met komma’s)</label>
-            <input className="form-control" value={images} onChange={e => setImages(e.target.value)} required />
+            <label className="form-label">Afbeeldingen</label>
+
+            {/* Existing thumbnails */}
+            <div className="d-flex flex-wrap gap-3 mb-2">
+              {images.map((url, index) => (
+                <div key={index} className="position-relative" style={{ width: '100px' }}>
+                  <img
+                    src={url}
+                    alt={`Afbeelding ${index + 1}`}
+                    className="img-thumbnail"
+                    style={{ width: '100px', height: '100px', objectFit: 'cover' }}
+                  />
+                  <button
+                    type="button"
+                    className="btn-close position-absolute top-0 end-0"
+                    onClick={() => {
+                      const updated = [...images];
+                      updated.splice(index, 1);
+                      setImages(updated);
+                    }}
+                  ></button>
+                </div>
+              ))}
+            </div>
+
+            {/* Upload new images */}
+            <input
+              type="file"
+              accept="image/*"
+              multiple
+              className="form-control"
+              onChange={e => setNewImageFiles(Array.from(e.target.files))}
+            />
           </div>
+
+
 
           <div className="mb-3">
             <label className="form-label">Video Link (optioneel)</label>
