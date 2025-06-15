@@ -5,11 +5,11 @@ import Footer from '../components/Footer';
 import { useNavigate } from 'react-router-dom';
 
 const CartPage = () => {
-  const { cart, setCart } = useCart();
+  const { cart, setCart, removeFromCart } = useCart();
   const navigate = useNavigate();
 
   const handleRemove = (id) => {
-    setCart(cart.filter(item => item.id !== id));
+    removeFromCart(id);
   };
 
   const handleQuantityChange = (id, delta) => {

@@ -5,7 +5,7 @@ import { db } from '../firebase';
 import { collection, addDoc } from 'firebase/firestore';
 
 const CheckoutPage = () => {
-  const { cart, setCart } = useCart();
+  const { cart, clearCart } = useCart();
   const navigate = useNavigate();
   const navigateRef = useRef(navigate);
   const [userData, setUserData] = useState({ name: '', email: '', address: '' });
@@ -34,7 +34,7 @@ const CheckoutPage = () => {
         }),
         onApprove: (data, actions) => actions.order.capture().then(() => {
           navigateRef.current('/thankyou');
-          setTimeout(() => setCart([]), 100);
+          setTimeout(() => clearCart(), 100);
         })
       }).render('#paypal-button-container');
     });
