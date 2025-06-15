@@ -5,6 +5,7 @@ import { db } from '../firebase';
 import { collection, addDoc, Timestamp } from 'firebase/firestore';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
+import { sendOrderConfirmation } from '../services/emailService';
 
 const CheckoutPage = () => {
   const { cart, clearCart } = useCart();
@@ -99,7 +100,8 @@ const renderPayPal = () => {
     };
 
     await addDoc(collection(db, 'orders'), orderData);
-    setCart([]);
+    await sendOrderConfirmation(orderData);
+    clearCart();
     navigateRef.current('/thankyou');
   } catch (error) {
     console.error("PayPal capture or saving failed:", error);
