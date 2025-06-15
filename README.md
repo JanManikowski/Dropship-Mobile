@@ -10,3 +10,15 @@ Currently, two official plugins are available:
 ## Expanding the ESLint configuration
 
 If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+
+## Stripe Checkout Server
+
+To enable Stripe payments, create a `.env` file based on `.env.example` and fill in your Stripe keys.
+
+Start the development server with:
+
+```bash
+npm run server
+```
+
+This provides an endpoint at `http://localhost:3001/create-checkout-session` that the app uses to start Stripe Checkout.
