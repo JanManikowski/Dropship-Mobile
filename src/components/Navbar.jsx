@@ -1,14 +1,16 @@
 import React, { useState } from 'react';
-import { Menu, ShoppingCart } from 'lucide-react';
+import { Menu, ShoppingCart, Heart } from 'lucide-react';
 import logo from '../assets/images/logo2.png';
 import { Link } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
+import { useWishlist } from '../context/WishlistContext';
 import TopBanner from '../components/TopBanner';
 
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const { cart } = useCart();
+  const { wishlist } = useWishlist();
 
   const toggleMenu = () => setIsOpen(!isOpen);
 
@@ -21,14 +23,24 @@ const Navbar = () => {
             <Menu className="w-6 h-6" />
           </button>
           <img src={logo} alt="Surprise of Love" style={{ height: '64px' }} />
-          <Link to="/cart" className="text-dark position-relative">
-            <ShoppingCart className="w-6 h-6" />
-            {cart.length > 0 && (
-              <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                {cart.length}
-              </span>
-            )}
-          </Link>
+          <div className="d-flex align-items-center gap-3">
+            <span className="position-relative">
+              <Heart />
+              {wishlist.length > 0 && (
+                <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                  {wishlist.length}
+                </span>
+              )}
+            </span>
+            <Link to="/cart" className="text-dark position-relative">
+              <ShoppingCart className="w-6 h-6" />
+              {cart.length > 0 && (
+                <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                  {cart.length}
+                </span>
+              )}
+            </Link>
+          </div>
         </div>
 
         {isOpen && (
