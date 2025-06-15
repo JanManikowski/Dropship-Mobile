@@ -13,6 +13,7 @@ const CartPage = () => {
 
   const [showOffer, setShowOffer] = useState(false);
   const [offerItem, setOfferItem] = useState(null);
+  const [paymentPlatform, setPaymentPlatform] = useState('paypal');
 
   const handleRemove = (id) => {
     removeFromCart(id);
@@ -31,6 +32,25 @@ const CartPage = () => {
       sum + (item.price * (item.quantity || 1)), 0).toFixed(2);
   };
 
+  const startStripeCheckout = async () => {
+    try {
+      const res = await fetch('http://localhost:3001/create-checkout-session', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ items: cart }),
+      });
+      const data = await res.json();
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        alert('Kan Stripe Checkout niet starten.');
+      }
+    } catch (err) {
+      console.error('Stripe session error:', err);
+      alert('Kan Stripe Checkout niet starten.');
+    }
+  };
+
   const handleCheckoutClick = async () => {
     try {
       const snap = await getDocs(collection(db, 'products'));
@@ -39,18 +59,26 @@ const CartPage = () => {
       const cartIds = cart.map(item => item.id);
       const filteredItems = allItems.filter(item => !cartIds.includes(item.id));
 
-      if (filteredItems.length > 0) {
-        const random = filteredItems[Math.floor(Math.random() * filteredItems.length)];
-        setOfferItem(random);
-        setShowOffer(true);
-      } else {
-        navigate('/checkout');
+        if (filteredItems.length > 0) {
+          const random = filteredItems[Math.floor(Math.random() * filteredItems.length)];
+          setOfferItem(random);
+          setShowOffer(true);
+        } else {
+          if (paymentPlatform === 'stripe') {
+            startStripeCheckout();
+          } else {
+            navigate('/checkout');
+          }
+        }
+      } catch (err) {
+        console.error("Failed to fetch offer item:", err);
+        if (paymentPlatform === 'stripe') {
+          startStripeCheckout();
+        } else {
+          navigate('/checkout');
+        }
       }
-    } catch (err) {
-      console.error("Failed to fetch offer item:", err);
-      navigate('/checkout');
-    }
-  };
+    };
 
   const acceptOffer = () => {
     if (offerItem) {
@@ -66,7 +94,19 @@ const CartPage = () => {
         },
       ]);
     }
-    navigate('/checkout');
+    if (paymentPlatform === 'stripe') {
+      startStripeCheckout();
+    } else {
+      navigate('/checkout');
+    }
+  };
+
+  const redirectWithoutOffer = () => {
+    if (paymentPlatform === 'stripe') {
+      startStripeCheckout();
+    } else {
+      navigate('/checkout');
+    }
   };
 
   return (
@@ -107,19 +147,47 @@ const CartPage = () => {
                   </div>
                 </div>
               </div>
-            ))}
+              ))}
 
-            {parseFloat(getSubtotal()) >= 30 && (
-              <div className="alert alert-success text-center fw-semibold mt-3 rounded-pill shadow-sm">
-                🎉 Gratis verzending vanaf €30! Goed bezig!
+              {parseFloat(getSubtotal()) >= 30 && (
+                <div className="alert alert-success text-center fw-semibold mt-3 rounded-pill shadow-sm">
+                  🎉 Gratis verzending vanaf €30! Goed bezig!
+                </div>
+              )}
+
+              <div className="mt-4">
+                <h5 className="fw-bold mb-2">Betaalplatform</h5>
+                <div className="form-check">
+                  <input
+                    className="form-check-input"
+                    type="radio"
+                    id="pay-paypal"
+                    checked={paymentPlatform === 'paypal'}
+                    onChange={() => setPaymentPlatform('paypal')}
+                  />
+                  <label className="form-check-label" htmlFor="pay-paypal">
+                    PayPal
+                  </label>
+                </div>
+                <div className="form-check">
+                  <input
+                    className="form-check-input"
+                    type="radio"
+                    id="pay-stripe"
+                    checked={paymentPlatform === 'stripe'}
+                    onChange={() => setPaymentPlatform('stripe')}
+                  />
+                  <label className="form-check-label" htmlFor="pay-stripe">
+                    Creditcard (Stripe)
+                  </label>
+                </div>
               </div>
-            )}
 
-            <div className="text-end mt-4">
-              <h4 className="fw-bold">Totaal: €{getSubtotal()}</h4>
-              <button className="btn btn-dark mt-3 px-5 py-2 rounded-pill fw-semibold shadow-sm" onClick={handleCheckoutClick}>
-                Doorgaan naar Afrekenen
-              </button>
+              <div className="text-end mt-4">
+                <h4 className="fw-bold">Totaal: €{getSubtotal()}</h4>
+                <button className="btn btn-dark mt-3 px-5 py-2 rounded-pill fw-semibold shadow-sm" onClick={handleCheckoutClick}>
+                  Doorgaan naar Afrekenen
+                </button>
             </div>
           </>
         )}
@@ -137,7 +205,7 @@ const CartPage = () => {
               <div className="modal-content shadow border-0 rounded-4">
                 <div className="modal-header border-0">
                   <h5 className="modal-title fs-4">✨ Speciale Aanbieding</h5>
-                  <button type="button" className="btn-close" onClick={() => navigate('/checkout')}></button>
+                  <button type="button" className="btn-close" onClick={redirectWithoutOffer}></button>
                 </div>
                 <div className="modal-body text-center">
                   <img src={offerItem.images?.[0]} alt={offerItem.title} className="img-fluid mb-4 rounded shadow-sm" style={{ maxHeight: '240px' }} />
@@ -153,7 +221,7 @@ const CartPage = () => {
                 </div>
                 <div className="modal-footer d-flex justify-content-center border-0 pb-4">
                   <button className="btn btn-success px-4 rounded-pill shadow-sm" onClick={acceptOffer}>Hell yeah!</button>
-                  <button className="btn btn-outline-secondary px-4 rounded-pill shadow-sm" onClick={() => navigate('/checkout')}>Nee, doorgaan</button>
+                  <button className="btn btn-outline-secondary px-4 rounded-pill shadow-sm" onClick={redirectWithoutOffer}>Nee, doorgaan</button>
                 </div>
               </div>
             </div>
