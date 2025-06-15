@@ -19,8 +19,12 @@ const Navbar = () => {
         <div className="d-flex justify-content-between align-items-center">
           <button className="btn p-0 border-0" onClick={toggleMenu}>
             <Menu className="w-6 h-6" />
-          </button>
+          </button> 
+
+          <Link to="/" className="text-dark fw-bold fs-4">
           <img src={logo} alt="Surprise of Love" style={{ height: '64px' }} />
+          </Link>
+          
           <Link to="/cart" className="text-dark position-relative">
             <ShoppingCart className="w-6 h-6" />
             {cart.length > 0 && (
@@ -34,10 +38,6 @@ const Navbar = () => {
         {isOpen && (
           <div className="bg-light position-absolute start-0 top-100 w-100 py-3 shadow-sm text-center">
             <Link to="/" className="d-block py-2 text-dark fw-semibold" onClick={toggleMenu}>Home</Link>
-            <Link to="/about" className="d-block py-2 text-dark fw-semibold" onClick={toggleMenu}>About</Link>
-            <Link to="/faq" className="d-block py-2 text-dark fw-semibold" onClick={toggleMenu}>FAQ</Link>
-            <Link to="/returns" className="d-block py-2 text-dark fw-semibold" onClick={toggleMenu}>Returns</Link>
-            <Link to="/contact" className="d-block py-2 text-dark fw-semibold" onClick={toggleMenu}>Contact</Link>
             <Link to="/products" className="d-block py-2 text-dark fw-semibold" onClick={toggleMenu}>Products</Link>
           </div>
         )}

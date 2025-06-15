@@ -14,6 +14,7 @@ import AdminLogin from './pages/AdminLogin';
 import CheckoutPage from './pages/CheckoutPage';
 import ProductsPage from './pages/ProductsPage';
 import EditProductPage from './pages/EditProductPage';
+import PaymentMethodPage from './pages/PaymentMethodPage';
 
 function App() {
   return (
@@ -29,6 +30,7 @@ function App() {
         <Route path="/faq" element={<FaqPage />} />
         <Route path="/returns" element={<ReturnPolicyPage />} />
         <Route path="/products" element={<ProductsPage />} />
+        <Route path="/payment-method" element={<PaymentMethodPage />} />
 
         <Route path="/admin" element={<AdminLogin />} />
         <Route path="/admin/add" element={<AddProductPage />} />

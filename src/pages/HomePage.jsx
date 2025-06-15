@@ -54,7 +54,10 @@ const Homepage = () => {
       </section>
 
       {/* Product Preview */}
+      <div className="pb-5 bg-light">
           <BestSellerSlider />
+
+      </div>
 
       <Footer />
     </div>
