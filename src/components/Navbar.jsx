@@ -25,7 +25,6 @@ const Navbar = () => {
 
           <Link to="/" className="text-dark fw-bold fs-4">
           <img src={logo} alt="Surprise of Love" style={{ height: '64px' }} />
-<<<<<<< HEAD
           </Link>
           
           <Link to="/cart" className="text-dark position-relative">
@@ -36,26 +35,6 @@ const Navbar = () => {
               </span>
             )}
           </Link>
-=======
-          <div className="d-flex align-items-center gap-3">
-            <span className="position-relative">
-              <Heart />
-              {wishlist.length > 0 && (
-                <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                  {wishlist.length}
-                </span>
-              )}
-            </span>
-            <Link to="/cart" className="text-dark position-relative">
-              <ShoppingCart className="w-6 h-6" />
-              {cart.length > 0 && (
-                <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                  {cart.length}
-                </span>
-              )}
-            </Link>
-          </div>
->>>>>>> 0e8b2ef5d51f4bb321b8644b67bee51c8cf0be4f
         </div>
 
         {isOpen && (
