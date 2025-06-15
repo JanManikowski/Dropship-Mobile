@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import Navbar from '../components/Navbar';
+import Footer from '../components/Footer';
 
 const ThankYouPage = () => {
   return (
@@ -24,6 +25,7 @@ const ThankYouPage = () => {
           <Link to="/" className="btn btn-primary px-4 py-2 rounded-pill">Continue Shopping</Link>
         </div>
       </main>
+      <Footer />
     </div>
   );
 };

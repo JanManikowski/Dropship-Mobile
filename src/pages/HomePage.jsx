@@ -1,5 +1,6 @@
 import React from 'react';
 import Navbar from '../components/Navbar';
+import Footer from '../components/Footer';
 import testImage from '../assets/images/test.jpg';
 import mainImage from '../assets/images/169main.jpg';
 import BestSellerSlider from '../components/BestSellerSlider';
@@ -55,6 +56,7 @@ const Homepage = () => {
       {/* Product Preview */}
           <BestSellerSlider />
 
+      <Footer />
     </div>
   );
 };

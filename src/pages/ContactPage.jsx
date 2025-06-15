@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import Navbar from '../components/Navbar';
+import Footer from '../components/Footer';
 
 const ContactPage = () => {
   const [form, setForm] = useState({ name: '', email: '', message: '' });
@@ -31,6 +32,7 @@ const ContactPage = () => {
           <button className="btn btn-primary" type="submit">Send</button>
         </form>
       </div>
+      <Footer />
     </div>
   );
 };
