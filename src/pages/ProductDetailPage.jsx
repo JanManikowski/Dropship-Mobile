@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from '../firebase';
 import Navbar from '../components/Navbar';
+import Footer from '../components/Footer';
 import { useCart } from '../context/CartContext';
 import ImageCarousel from '../components/ImageCarousel';
 
@@ -150,6 +151,7 @@ const ProductDetailPage = () => {
           </div>
         </div>
       </div>
+      <Footer />
     </div>
   );
 };

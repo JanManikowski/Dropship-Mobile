@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { collection, getDocs } from 'firebase/firestore';
 import { db } from '../firebase';
 import Navbar from '../components/Navbar';
+import Footer from '../components/Footer';
 import ProductCard from '../components/ProductCard';
 const ProductsPage = () => {
   const [products, setProducts] = useState([]);
@@ -24,7 +25,7 @@ const ProductsPage = () => {
   }, []);
 
   return (
-    <div style={{ minHeight: '100vh' }}>
+    <div className="min-vh-100 d-flex flex-column">
       <Navbar />
 
       <section className="py-5 bg-light">
@@ -46,6 +47,7 @@ const ProductsPage = () => {
           )}
         </div>
       </section>
+      <Footer />
     </div>
   );
 };
