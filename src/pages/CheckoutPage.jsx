@@ -12,17 +12,10 @@ const CheckoutPage = () => {
   const navigateRef = useRef(navigate);
 
   const [userData, setUserData] = useState({
-    email: '',
-    name: '',
-    lastName: '',
-    address: '',
-    city: '',
-    postalCode: '',
-    country: 'Nederland',
-    phone: ''
+    email: '', name: '', lastName: '', address: '', city: '', postalCode: '', country: 'Nederland', phone: ''
   });
 
-  const [paymentMethod, setPaymentMethod] = useState('klarna');
+  const [paymentMethod, setPaymentMethod] = useState('ideal');
   const [addInsurance, setAddInsurance] = useState(false);
 
   const getTotal = () => {
@@ -34,84 +27,61 @@ const CheckoutPage = () => {
     setUserData({ ...userData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const orderData = {
-      ...userData,
-      cart,
-      total: getTotal(),
-      insurance: addInsurance,
-      paymentMethod,
-      createdAt: Timestamp.now(),
-    };
+const getStripeSafeImageUrl = (url) => url;
 
-    try {
-      await addDoc(collection(db, 'orders'), orderData);
-      alert("Bestelling opgeslagen. Je kunt nu betalen via PayPal.");
-    } catch (error) {
-      console.error("Error saving order:", error);
-      alert("Er ging iets mis met het opslaan van je bestelling.");
-    }
+const handleSubmit = async (e) => {
+  e.preventDefault();
+
+  const orderData = {
+    ...userData,
+    cart,
+    total: getTotal(),
+    insurance: addInsurance,
+    paymentMethod,
+    createdAt: Timestamp.now(),
   };
 
-const renderPayPal = () => {
-  if (window.paypal) {
-    window.paypal.Buttons({
-      style: {
-        layout: 'vertical',
-        color: 'gold',
-        shape: 'rect',
-        label: 'paypal', // Only PayPal button
-        tagline: false   // Removes "Powered by PayPal"
-      },
-      fundingSource: window.paypal.FUNDING.PAYPAL, // Force only PayPal
-      createOrder: (data, actions) => {
-        return actions.order.create({
-          purchase_units: [{
-            amount: { value: getTotal() },
-            description: 'Order via Quick Checkout'
-          }]
-        });
-      },
-      onApprove: async (data, actions) => {
   try {
-    const details = await actions.order.capture();
+    const stripePayload = cart.map(item => ({
+      name: item.name,
+      price: item.price,
+      quantity: item.quantity || 1,
+      image: getStripeSafeImageUrl(item.image),
+      
 
-    const shipping = details.purchase_units?.[0]?.shipping?.address;
-    const name = details.purchase_units?.[0]?.shipping?.name?.full_name;
-    const email = details.payer?.email_address;
+    }));
+    stripePayload.forEach(item => {
+      console.log("Stripe product image:", item.image);
+    });
 
-    const orderData = {
-      name,
-      email,
-      cart,
-      total: getTotal(),
-      insurance: addInsurance,
-      paymentMethod: 'paypal',
-      createdAt: Timestamp.now(),
-      paypalOrderID: data.orderID,
-      shippingAddress: {
-        address: `${shipping?.address_line_1 || ''} ${shipping?.address_line_2 || ''}`,
-        city: shipping?.admin_area_2 || '',
-        postalCode: shipping?.postal_code || '',
-        country: shipping?.country_code || ''
-      }
-    };
+    if (paymentMethod === 'ideal' || paymentMethod === 'creditcard') {
+const response = await fetch('http://localhost:3001/create-checkout-session', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({
+    items: stripePayload,
+    email: userData.email,
+    userData,
+    insurance: addInsurance,
+    total: getTotal(),
+  }),
+});
 
-    await addDoc(collection(db, 'orders'), orderData);
-    setCart([]);
-    navigateRef.current('/thankyou');
+
+      const data = await response.json();
+      if (!data.url) throw new Error('No checkout URL returned');
+      window.location.href = data.url;
+
+    } else if (paymentMethod === 'paypal') {
+      alert("Scroll naar beneden en gebruik de PayPal knop om te betalen.");
+    } else {
+      alert("Bestelling opgeslagen. Kies je betaalmethode.");
+    }
   } catch (error) {
-    console.error("PayPal capture or saving failed:", error);
-    alert("Er ging iets mis bij het verwerken van je PayPal betaling.");
-  }
-}
-
-
-    }).render('#paypal-button-container');
+    console.error("Order opslaan mislukt:", error);
+    alert("Er ging iets mis met het opslaan van je bestelling of starten van betaling.");
   }
 };
-
 
 
   useEffect(() => {
@@ -128,7 +98,54 @@ const renderPayPal = () => {
     } else {
       renderPayPal();
     }
-  }, []); // run once on page load
+  }, []);
+
+  const renderPayPal = () => {
+    if (window.paypal) {
+      window.paypal.Buttons({
+        style: { layout: 'vertical', color: 'gold', shape: 'rect', label: 'paypal', tagline: false },
+        fundingSource: window.paypal.FUNDING.PAYPAL,
+        createOrder: (data, actions) => {
+          return actions.order.create({
+            purchase_units: [{ amount: { value: getTotal() }, description: 'Order via Quick Checkout' }]
+          });
+        },
+        onApprove: async (data, actions) => {
+          try {
+            const details = await actions.order.capture();
+            const shipping = details.purchase_units?.[0]?.shipping?.address;
+            const name = details.purchase_units?.[0]?.shipping?.name?.full_name;
+            const email = details.payer?.email_address;
+
+            const orderData = {
+              name,
+              email,
+              cart,
+              total: getTotal(),
+              insurance: addInsurance,
+              paymentMethod: 'paypal',
+              createdAt: Timestamp.now(),
+              paypalOrderID: data.orderID,
+              shippingAddress: {
+                address: `${shipping?.address_line_1 || ''} ${shipping?.address_line_2 || ''}`,
+                city: shipping?.admin_area_2 || '',
+                postalCode: shipping?.postal_code || '',
+                country: shipping?.country_code || ''
+              }
+            };
+
+            await addDoc(collection(db, 'orders'), orderData);
+            clearCart();
+            console.log("🔥 Webhook session metadata:", session.metadata);
+            navigateRef.current('/thankyou');
+          } catch (error) {
+            console.error("PayPal betaling mislukt:", error);
+            alert("Er ging iets mis bij het verwerken van je betaling.");
+          }
+        }
+      }).render('#paypal-button-container');
+    }
+  };
 
   return (
     <>
