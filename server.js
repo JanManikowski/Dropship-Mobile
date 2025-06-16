@@ -2,8 +2,9 @@ import express from 'express';
 import Stripe from 'stripe';
 import cors from 'cors';
 import bodyParser from 'body-parser';
+import dotenv from 'dotenv';
 
-import { initializeApp, cert } from 'firebase-admin/app';
+import { initializeApp, cert, getApp  } from 'firebase-admin/app';
 
 import serviceAccount from './serviceAccountKey.json' assert { type: "json" };
 import { getFirestore } from 'firebase-admin/firestore';
@@ -11,30 +12,15 @@ import { getFirestore } from 'firebase-admin/firestore';
 dotenv.config();
 
 // 🔑 Setup Stripe + Firebase
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, { apiVersion: '2023-10-16' }); // Replace with your real key
-const webhookSecret = process.env.WEBHOOK_SECRET; // Replace with your real webhook secret
-
-initializeApp({
-  credential: cert(serviceAccount),
-});
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, { apiVersion: '2023-10-16' });
+const webhookSecret = process.env.WEBHOOK_SECRET;
 
 // Name the second app to avoid conflicts
 initializeApp({
-  credential: cert({
-    type: 'service_account',
-    project_id: 'dropship-45d6d',
-    private_key_id: 'YOUR_KEY_ID_HERE',
-    private_key: process.env.SERVICE_ACCOUNT_KEY.replace(/\\n/g, '\n'),
-    client_email: 'stripe-webhook-handler@dropship-45d6d.iam.gserviceaccount.com',
-    client_id: 'YOUR_CLIENT_ID_HERE',
-    auth_uri: 'https://accounts.google.com/o/oauth2/auth',
-    token_uri: 'https://oauth2.googleapis.com/token',
-    auth_provider_x509_cert_url: 'https://www.googleapis.com/oauth2/v1/certs',
-    client_x509_cert_url: 'https://www.googleapis.com/robot/v1/metadata/x509/stripe-webhook-handler%40dropship-45d6d.iam.gserviceaccount.com'
-  })
-}, 'webhookHandlerApp');
+  credential: cert(serviceAccount)
+});
 
-const db = getFirestore();
+const db = getFirestore(); // ← Use default app
 
 const app = express();
 
