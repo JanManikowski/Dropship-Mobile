@@ -24,4 +24,6 @@ dist-ssr
 *.sw?
 
 # Environment variables
+# Prevent secrets from ever being tracked again
+serviceAccountKey.json
 .env

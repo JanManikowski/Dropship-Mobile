@@ -9,8 +9,8 @@ import serviceAccount from './serviceAccountKey.json' assert { type: "json" };
 import { getFirestore } from 'firebase-admin/firestore';
 
 // 🔑 Setup Stripe + Firebase
-const stripe = new Stripe('sk_test_51RaPFYPogbbJ9WRa4lMwmyGcmmZ1FE50QaOWgzmu0TZ13cf1gmN6yA3SGQbCE45I0LISnCeLffEWtcRZwXwTTuKZ00XeJ4aoI0', { apiVersion: '2023-10-16' }); // Replace with your real key
-const webhookSecret = 'whsec_UhhU8EEwBMR1oWmCnGajppRrMAcu9hlI';
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, { apiVersion: '2023-10-16' }); // Replace with your real key
+const webhookSecret = process.env.WEBHOOK_SECRET; // Replace with your real webhook secret
 
 initializeApp({
   credential: cert(serviceAccount),
