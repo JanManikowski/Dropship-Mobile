@@ -31,7 +31,7 @@ const Navbar = () => {
             <ShoppingCart className="w-6 h-6" />
             {cart.length > 0 && (
               <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                {cart.length}
+                {cart.reduce((sum, item) => sum + (item.quantity || 1), 0)}
               </span>
             )}
           </Link>

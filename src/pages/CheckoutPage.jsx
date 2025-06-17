@@ -136,7 +136,7 @@ const response = await fetch('http://localhost:3001/create-checkout-session', {
 
             await addDoc(collection(db, 'orders'), orderData);
             clearCart();
-            console.log("🔥 Webhook session metadata:", session.metadata);
+            console.log("🔥 PayPal bestelling voltooid:", details);
             navigateRef.current('/thankyou');
           } catch (error) {
             console.error("PayPal betaling mislukt:", error);

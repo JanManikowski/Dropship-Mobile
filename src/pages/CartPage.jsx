@@ -13,7 +13,6 @@ const CartPage = () => {
 
   const [showOffer, setShowOffer] = useState(false);
   const [offerItem, setOfferItem] = useState(null);
-  const [paymentPlatform, setPaymentPlatform] = useState('paypal');
 
   const handleRemove = (id) => {
     removeFromCart(id);
@@ -80,26 +79,23 @@ const CartPage = () => {
       }
     };
 
-  const acceptOffer = () => {
-    if (offerItem) {
-      const discounted = offerItem.discountPrice ? offerItem.discountPrice * 0.9 : offerItem.price * 0.9;
-      setCart([
-        ...cart,
-        {
-          id: offerItem.id,
-          name: offerItem.title,
-          image: offerItem.images?.[0] || '',
-          price: parseFloat(discounted.toFixed(2)),
-          quantity: 1,
-        },
-      ]);
-    }
-    if (paymentPlatform === 'stripe') {
-      startStripeCheckout();
-    } else {
-      navigate('/checkout');
-    }
-  };
+const { addToCart } = useCart(); // Make sure this is imported
+
+const acceptOffer = () => {
+  if (offerItem) {
+    const discounted = offerItem.discountPrice ? offerItem.discountPrice * 0.9 : offerItem.price * 0.9;
+    addToCart({
+      id: offerItem.id,
+      name: offerItem.title,
+      image: offerItem.images?.[0] || '',
+      price: parseFloat(discounted.toFixed(2)),
+      quantity: 1,
+    });
+  }
+
+  setShowOffer(false); // hide modal
+  navigate('/checkout');
+};
 
   const redirectWithoutOffer = () => {
     if (paymentPlatform === 'stripe') {
@@ -126,8 +122,19 @@ const CartPage = () => {
             {cart.map((item) => (
               <div className="card mb-3 shadow-sm border-0 rounded-4" key={item.id}>
                 <div className="row g-0 align-items-center">
-                  <div className="col-4 col-md-2">
-                    <img src={item.image} alt={item.name} className="img-fluid rounded-start" />
+                  <div className="col-4 col-md-2" style={{ height: '132px', overflow: 'hidden' }}>
+                    <img
+                      src={item.image}
+                      alt={item.name}
+                      style={{
+                        width: '100%',
+                        height: '100%',
+                        objectFit: 'cover',
+                        borderTopLeftRadius: '1rem',
+                        borderBottomLeftRadius: '1rem',
+                      }}
+                      className="img-fluid"
+                    />
                   </div>
                   <div className="col-8 col-md-10">
                     <div className="card-body d-flex flex-column flex-md-row justify-content-between align-items-center">
@@ -155,33 +162,11 @@ const CartPage = () => {
                 </div>
               )}
 
-              <div className="mt-4">
-                <h5 className="fw-bold mb-2">Betaalplatform</h5>
-                <div className="form-check">
-                  <input
-                    className="form-check-input"
-                    type="radio"
-                    id="pay-paypal"
-                    checked={paymentPlatform === 'paypal'}
-                    onChange={() => setPaymentPlatform('paypal')}
-                  />
-                  <label className="form-check-label" htmlFor="pay-paypal">
-                    PayPal
-                  </label>
+              {parseFloat(getSubtotal()) < 30 && (
+                <div className="alert alert-danger text-center fw-semibold mt-3 rounded-pill shadow-sm">
+                  🎉 Gratis verzending vanaf €30!
                 </div>
-                <div className="form-check">
-                  <input
-                    className="form-check-input"
-                    type="radio"
-                    id="pay-stripe"
-                    checked={paymentPlatform === 'stripe'}
-                    onChange={() => setPaymentPlatform('stripe')}
-                  />
-                  <label className="form-check-label" htmlFor="pay-stripe">
-                    Creditcard (Stripe)
-                  </label>
-                </div>
-              </div>
+              )}
 
               <div className="text-end mt-4">
                 <h4 className="fw-bold">Totaal: €{getSubtotal()}</h4>
@@ -205,7 +190,7 @@ const CartPage = () => {
               <div className="modal-content shadow border-0 rounded-4">
                 <div className="modal-header border-0">
                   <h5 className="modal-title fs-4">✨ Speciale Aanbieding</h5>
-                  <button type="button" className="btn-close" onClick={redirectWithoutOffer}></button>
+                  <button type="button" className="btn-close" onClick={() => navigate('/checkout')}></button>
                 </div>
                 <div className="modal-body text-center">
                   <img src={offerItem.images?.[0]} alt={offerItem.title} className="img-fluid mb-4 rounded shadow-sm" style={{ maxHeight: '240px' }} />
@@ -221,7 +206,7 @@ const CartPage = () => {
                 </div>
                 <div className="modal-footer d-flex justify-content-center border-0 pb-4">
                   <button className="btn btn-success px-4 rounded-pill shadow-sm" onClick={acceptOffer}>Hell yeah!</button>
-                  <button className="btn btn-outline-secondary px-4 rounded-pill shadow-sm" onClick={redirectWithoutOffer}>Nee, doorgaan</button>
+                  <button className="btn btn-outline-secondary px-4 rounded-pill shadow-sm" onClick={() => navigate('/checkout')}>Nee, doorgaan</button>
                 </div>
               </div>
             </div>
